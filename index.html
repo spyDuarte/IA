@@ -1,0 +1,1848 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#060810" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Puter AI Studio Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg0:#060810;--bg1:#090c18;--bg2:#0d1225;
+      --card:rgba(255,255,255,0.048);--card-h:rgba(255,255,255,0.075);
+      --stroke:rgba(255,255,255,0.09);--stroke2:rgba(255,255,255,0.16);
+      --text:#e8eeff;--muted:rgba(232,238,255,0.62);--muted2:rgba(232,238,255,0.44);
+      --shadow:0 28px 100px rgba(0,0,0,0.65);--shadow2:0 10px 36px rgba(0,0,0,0.40);
+      --accent:#7b5fff;--accent2:#00d8ff;--ok:#22d392;--warn:#ffb224;--bad:#ff4a6a;
+      --mono:'JetBrains Mono', ui-monospace, monospace;--sans:'Sora', ui-sans-serif, system-ui, sans-serif;
+      --r1:24px;--r2:16px;--r3:12px;--r4:8px;
+      --focus:rgba(123,95,255,0.5);
+      --glass:rgba(255,255,255,0.048);--glass2:rgba(255,255,255,0.075);
+      --sel:rgba(123,95,255,0.18);--sel2:rgba(0,216,255,0.12);
+      --ease:cubic-bezier(0.22,1,0.36,1);
+    }
+    html[data-theme="light"]{
+      --bg0:#f2f4fc;--bg1:#eaedfa;--bg2:#e2e7f7;
+      --card:rgba(10,18,60,0.045);--card-h:rgba(10,18,60,0.07);
+      --stroke:rgba(10,18,60,0.09);--stroke2:rgba(10,18,60,0.16);
+      --text:#0b1022;--muted:rgba(11,16,34,0.65);--muted2:rgba(11,16,34,0.48);
+      --shadow:0 20px 70px rgba(0,0,0,0.12);--shadow2:0 8px 28px rgba(0,0,0,0.09);
+      --glass:rgba(10,18,60,0.038);--glass2:rgba(10,18,60,0.062);
+      --sel:rgba(123,95,255,0.12);--sel2:rgba(0,216,255,0.09);
+    }
+
+    *,*::before,*::after{box-sizing:border-box;}
+    html,body{height:100%;margin:0;}
+    body{
+      font-family:var(--sans);font-size:13px;color:var(--text);
+      background:
+        radial-gradient(ellipse 1300px 700px at 18% -4%, rgba(123,95,255,0.22), transparent 62%),
+        radial-gradient(ellipse 900px 600px at 90% 14%, rgba(0,216,255,0.18), transparent 58%),
+        radial-gradient(ellipse 800px 700px at 38% 130%, rgba(34,211,146,0.09), transparent 62%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      padding:16px;min-height:100vh;
+    }
+
+    .app{
+      width:min(1420px,100%);margin:0 auto;border:1px solid var(--stroke);
+      border-radius:calc(var(--r1) + 6px);
+      background:linear-gradient(170deg, rgba(255,255,255,0.052), rgba(255,255,255,0.025));
+      box-shadow:var(--shadow);overflow:hidden;
+      backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+      animation:appIn .4s var(--ease) both;
+    }
+    @keyframes appIn{from{opacity:0;transform:translateY(18px) scale(0.99);}to{opacity:1;transform:none;}}
+
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:13px 16px;border-bottom:1px solid var(--stroke);
+      background:linear-gradient(180deg, rgba(255,255,255,0.065), rgba(255,255,255,0.02));
+    }
+    .brand{display:flex;align-items:center;gap:12px;}
+    .mark{
+      width:36px;height:36px;border-radius:12px;flex-shrink:0;
+      background:
+        radial-gradient(16px 16px at 30% 28%, rgba(255,255,255,0.52), transparent 58%),
+        linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow:0 10px 28px rgba(123,95,255,0.28);
+      border:1px solid rgba(255,255,255,0.2);
+      position:relative;overflow:hidden;
+    }
+    .mark::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg, transparent 60%, rgba(255,255,255,0.08));}
+    .brand-text h1{margin:0;font-size:13.5px;font-weight:800;letter-spacing:0.2px;}
+    .brand-text .sub{margin-top:2px;font-size:10.5px;color:var(--muted2);letter-spacing:0.15px;}
+    .top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+
+    button{font-family:var(--sans);cursor:pointer;}
+    .btn{
+      display:inline-flex;align-items:center;gap:6px;border:1px solid var(--stroke);
+      background:var(--glass);color:var(--text);padding:8px 12px;border-radius:var(--r3);
+      font-size:12px;font-weight:500;transition:background .15s,border-color .15s,transform .1s,box-shadow .15s,color .15s;
+      user-select:none;white-space:nowrap;
+    }
+    .btn:hover{background:var(--glass2);border-color:var(--stroke2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.2);}
+    .btn:active{transform:translateY(0);}
+    .btn:disabled{opacity:0.46;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+    .btn.primary{
+      background:linear-gradient(135deg, rgba(123,95,255,0.9), rgba(0,216,255,0.82));
+      border-color:rgba(255,255,255,0.2);box-shadow:0 14px 40px rgba(123,95,255,0.2);
+      color:#fff;font-weight:600;
+    }
+    .btn.primary:hover{background:linear-gradient(135deg, rgba(123,95,255,1), rgba(0,216,255,0.95));box-shadow:0 16px 48px rgba(123,95,255,0.3);}
+    .btn.ghost{background:transparent;border-color:transparent;}
+    .btn.ghost:hover{background:var(--glass);border-color:var(--stroke);}
+    .btn.danger{background:rgba(255,74,106,0.1);border-color:rgba(255,74,106,0.32);}
+    .btn.danger:hover{background:rgba(255,74,106,0.18);border-color:rgba(255,74,106,0.52);}
+    .btn.icon{padding:7px;border-radius:10px;}
+    .btn.sm{padding:6px 10px;font-size:11px;}
+
+    .pill{
+      display:inline-flex;align-items:center;gap:7px;border:1px solid var(--stroke);
+      background:var(--glass);padding:7px 11px;border-radius:999px;font-size:11.5px;color:var(--muted);
+    }
+    .dot{
+      width:7px;height:7px;border-radius:50%;background:var(--warn);
+      box-shadow:0 0 0 3px rgba(255,178,36,0.14);transition:background .3s,box-shadow .3s;
+    }
+    .dot.ok{background:var(--ok);box-shadow:0 0 0 3px rgba(34,211,146,0.16);}
+    .dot.bad{background:var(--bad);box-shadow:0 0 0 3px rgba(255,74,106,0.16);}
+
+    .grid{display:grid;grid-template-columns:430px 1fr;min-height:700px;}
+    @media (max-width:1080px){.grid{grid-template-columns:1fr;}}
+
+    .sidebar{
+      padding:14px;border-right:1px solid var(--stroke);background:rgba(255,255,255,0.018);
+      transition:width .18s var(--ease);overflow:hidden;
+    }
+    .sidebar.collapsed{width:78px;padding:12px 8px;}
+    .sidebar.collapsed .hide-collapsed{display:none!important;}
+    .sidebar.collapsed .card{border-radius:var(--r2);}
+    .sidebar.collapsed .card .head{justify-content:center;}
+    .sidebar.collapsed .card .head .hint{display:none;}
+    @media (max-width:1080px){
+      .sidebar{border-right:none;border-bottom:1px solid var(--stroke);}
+      .sidebar.collapsed{width:auto;}
+    }
+
+    .card{
+      border:1px solid var(--stroke);background:var(--card);border-radius:var(--r1);
+      box-shadow:var(--shadow2);overflow:hidden;transition:border-color .15s;
+    }
+    .card + .card{margin-top:12px;}
+    .card .head{
+      display:flex;align-items:center;justify-content:space-between;gap:8px;
+      padding:11px 13px 10px;border-bottom:1px solid var(--stroke);background:rgba(255,255,255,0.035);
+    }
+    .title{font-size:11.5px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;}
+    .hint{font-size:10.5px;color:var(--muted2);}
+    .body{padding:13px;}
+
+    label{
+      display:block;font-size:10.5px;font-weight:600;color:var(--muted);
+      margin-bottom:5px;letter-spacing:0.3px;text-transform:uppercase;
+    }
+    textarea,input[type="text"],input[type="number"],select{
+      width:100%;border:1px solid var(--stroke);border-radius:var(--r3);
+      background:rgba(255,255,255,0.048);color:var(--text);
+      padding:9px 11px;outline:none;font-size:12.5px;font-family:var(--sans);
+      transition:border-color .15s,background .15s,box-shadow .15s;
+    }
+    textarea:focus,input:focus,select:focus{
+      border-color:var(--focus);background:rgba(255,255,255,0.065);
+      box-shadow:0 0 0 3px rgba(123,95,255,0.12);
+    }
+    textarea{resize:vertical;min-height:72px;line-height:1.55;field-sizing:content;}
+    select{appearance:none;cursor:pointer;}
+
+    .row{display:flex;gap:9px;align-items:flex-end;}
+    .row + .row{margin-top:10px;}
+    .col{flex:1;min-width:0;}
+    .col.sm{flex:0 0 140px;}
+    .col.xs{flex:0 0 110px;}
+
+    .select-wrap{position:relative;}
+    .select-wrap select{padding-right:28px;}
+    .select-wrap::after{
+      content:'⌃';position:absolute;right:10px;top:50%;
+      transform:translateY(-50%) rotate(180deg);
+      color:var(--muted2);pointer-events:none;font-size:12px;
+    }
+    .select-wrap .clear-btn{
+      position:absolute;right:26px;top:50%;transform:translateY(-50%);
+      background:transparent;border:none;color:var(--muted2);
+      cursor:pointer;font-size:15px;padding:3px 5px;line-height:1;
+    }
+    .select-wrap .clear-btn:hover{color:var(--text);}
+
+    .toggle-row{
+      display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--stroke);
+      border-radius:var(--r3);background:rgba(255,255,255,0.03);font-size:12px;color:var(--muted);
+      user-select:none;cursor:pointer;transition:background .12s,border-color .12s;
+    }
+    .toggle-row:hover{background:rgba(255,255,255,0.055);border-color:var(--stroke2);}
+    .toggle-row input{width:auto;margin:0;accent-color:var(--accent);cursor:pointer;}
+    .toggle-row .tgl-desc{margin-left:auto;font-size:10.5px;color:var(--muted2);}
+
+    .sep{height:1px;background:var(--stroke);margin:11px 0;}
+    .kbd{
+      font-family:var(--mono);font-size:10.5px;color:var(--muted2);
+      border:1px solid var(--stroke);background:rgba(255,255,255,0.04);
+      padding:2px 6px;border-radius:7px;
+    }
+    .meta-line{
+      font-size:10.5px;color:var(--muted2);margin-top:7px;
+      display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;
+    }
+    .char-counter{
+      font-size:10.5px;color:var(--muted2);text-align:right;margin-top:4px;
+      font-family:var(--mono);transition:color .2s;
+    }
+    .char-counter.warn{color:var(--warn);}
+
+    .main{display:flex;flex-direction:column;background:rgba(255,255,255,0.016);}
+    .tabs{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:11px 14px;border-bottom:1px solid var(--stroke);
+      background:rgba(255,255,255,0.025);flex-wrap:wrap;
+    }
+    .tab-left{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+    .tab{
+      border:1px solid var(--stroke);background:rgba(255,255,255,0.038);color:var(--muted);
+      padding:7px 13px;border-radius:999px;font-size:12px;font-weight:500;
+      cursor:pointer;user-select:none;transition:background .14s,border-color .14s,color .14s;
+    }
+    .tab:hover{background:rgba(255,255,255,0.062);color:var(--text);}
+    .tab.active{
+      background:linear-gradient(135deg, var(--sel), var(--sel2));
+      border-color:rgba(123,95,255,0.36);color:var(--text);
+    }
+    .tab-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+    .status-line{font-size:11px;color:var(--muted2);display:flex;align-items:center;gap:8px;}
+
+    .loader{display:none;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);}
+    .loader.on{display:flex;}
+    .spin{
+      width:14px;height:14px;border-radius:50%;
+      border:2px solid rgba(255,255,255,0.14);border-top-color:var(--accent);
+      animation:spin .72s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    .view{display:none;flex:1 1 auto;}
+    .view.active{display:flex;flex-direction:column;}
+
+    .chat-body{padding:16px;overflow-y:auto;flex:1 1 auto;max-height:860px;scroll-behavior:smooth;}
+    .msg{display:flex;gap:10px;margin-bottom:14px;animation:msgIn .25s var(--ease) both;}
+    @keyframes msgIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+    .avatar{
+      width:29px;height:29px;border-radius:10px;border:1px solid var(--stroke);
+      background:rgba(255,255,255,0.06);
+      display:flex;align-items:center;justify-content:center;
+      font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;font-family:var(--mono);
+    }
+    .msg.user .avatar{
+      background:linear-gradient(135deg, rgba(123,95,255,0.25), rgba(0,216,255,0.18));
+      border-color:rgba(123,95,255,0.28);color:var(--accent2);
+    }
+    .msg.assistant .avatar{
+      background:linear-gradient(135deg, rgba(34,211,146,0.18), rgba(0,216,255,0.12));
+      border-color:rgba(34,211,146,0.24);color:var(--ok);
+    }
+    .msg-content{flex:1;min-width:0;}
+    .bubble{
+      border:1px solid var(--stroke);background:rgba(255,255,255,0.046);
+      border-radius:4px 16px 16px 16px;
+      padding:11px 13px;line-height:1.68;font-size:13px;
+      white-space:pre-wrap;word-break:break-word;
+    }
+    .msg.user .bubble{
+      background:linear-gradient(135deg, rgba(123,95,255,0.14), rgba(0,216,255,0.09));
+      border-color:rgba(123,95,255,0.26);
+      border-radius:16px 4px 16px 16px;
+    }
+    .msg-actions{display:flex;gap:6px;align-items:center;margin-top:6px;opacity:0;transition:opacity .15s;}
+    .msg:hover .msg-actions{opacity:1;}
+    .stamp{font-size:10px;color:var(--muted2);font-family:var(--mono);}
+
+    .chat-foot{
+      padding:12px 14px;border-top:1px solid var(--stroke);
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;flex-wrap:wrap;background:rgba(255,255,255,0.025);
+    }
+
+    .prompt-wrap{position:relative;}
+    .prompt-wrap textarea{padding-right:36px;}
+    .prompt-history-hint{
+      position:absolute;bottom:8px;right:10px;font-size:10px;color:var(--muted2);
+      font-family:var(--mono);pointer-events:none;user-select:none;
+    }
+
+    .compare-wrap{
+      padding:14px;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:12px;align-items:start;overflow:auto;
+    }
+    @media (max-width:1080px){.compare-wrap{grid-template-columns:1fr;}}
+    .cmp-card{
+      border:1px solid var(--stroke);background:var(--card);border-radius:var(--r1);
+      box-shadow:var(--shadow2);display:flex;flex-direction:column;min-height:440px;
+      transition:border-color .3s;
+    }
+    .cmp-card.winner{border-color:rgba(34,211,146,0.42);}
+    .cmp-card.loser{border-color:rgba(255,74,106,0.28);}
+    .cmp-head{
+      padding:11px 13px;border-bottom:1px solid var(--stroke);
+      display:flex;justify-content:space-between;gap:10px;background:rgba(255,255,255,0.028);align-items:center;
+    }
+    .cmp-title{font-weight:700;font-size:12px;letter-spacing:.2px;}
+    .cmp-title span{
+      display:block;font-weight:500;color:var(--muted);
+      font-size:10.5px;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:380px;
+    }
+    .cmp-body{padding:13px;flex:1 1 auto;overflow:auto;}
+    .cmp-out{font-size:12.5px;line-height:1.72;white-space:pre-wrap;word-break:break-word;}
+    .cmp-meta{
+      padding:9px 13px;border-top:1px solid var(--stroke);background:rgba(255,255,255,0.025);
+      display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;
+      color:var(--muted2);font-size:10.5px;font-family:var(--mono);
+    }
+    .verdict-badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;display:none;}
+    .verdict-badge.win{background:rgba(34,211,146,0.16);color:var(--ok);border:1px solid rgba(34,211,146,0.3);}
+    .verdict-badge.loss{background:rgba(255,74,106,0.12);color:var(--bad);border:1px solid rgba(255,74,106,0.28);}
+
+    .logs-wrap{padding:14px;display:flex;flex-direction:column;gap:12px;overflow:auto;}
+    .log-box{
+      border:1px solid var(--stroke);background:rgba(0,0,0,0.22);border-radius:var(--r1);
+      padding:13px;font-family:var(--mono);font-size:11px;color:var(--muted);
+      white-space:pre-wrap;word-break:break-word;min-height:280px;max-height:600px;overflow-y:auto;line-height:1.6;
+    }
+    html[data-theme="light"] .log-box{background:rgba(10,18,60,0.055);}
+    .log-line-err{color:var(--bad);} .log-line-ok{color:var(--ok);} .log-line-warn{color:var(--warn);}
+
+    .details-body{
+      font-family:var(--mono);font-size:11px;color:var(--muted);
+      white-space:pre-wrap;line-height:1.65;
+    }
+    .details-key{color:var(--muted2);} .details-val{color:var(--text);}
+
+    .err-box{
+      display:none;margin-top:10px;border:1px solid rgba(255,74,106,0.32);
+      background:rgba(255,74,106,0.08);border-radius:var(--r3);
+      padding:10px;font-family:var(--mono);font-size:11px;white-space:pre-wrap;word-break:break-word;color:var(--text);
+      animation:fadeIn .2s ease;
+    }
+    .err-box.on{display:block;}
+    @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+    .toast{
+      position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(16px);
+      background:rgba(8,10,24,0.88);backdrop-filter:blur(10px);color:#fff;
+      padding:9px 14px;border-radius:var(--r3);border:1px solid rgba(255,255,255,0.14);
+      font-size:12px;font-family:var(--sans);display:block;max-width:min(880px,92vw);
+      box-shadow:0 14px 46px rgba(0,0,0,0.4);z-index:99999;opacity:0;pointer-events:none;
+      transition:opacity .22s var(--ease), transform .22s var(--ease);
+    }
+    .toast.on{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+    .toast.err{border-color:rgba(255,74,106,0.45);background:rgba(30,8,14,0.9);}
+    .toast.ok{border-color:rgba(34,211,146,0.42);background:rgba(4,24,16,0.9);}
+    .toast.warn{border-color:rgba(255,178,36,0.42);background:rgba(24,18,4,0.9);}
+    html[data-theme="light"] .toast{background:rgba(10,16,40,0.9);}
+
+    .md h1,.md h2,.md h3{margin:12px 0 6px;line-height:1.35;}
+    .md h1{font-size:15px;} .md h2{font-size:13.5px;} .md h3{font-size:12.5px;}
+    .md p{margin:7px 0;}
+    .md ul,.md ol{margin:7px 0 7px 20px;padding:0;}
+    .md li{margin:3px 0;}
+    .md code{
+      font-family:var(--mono);font-size:11.5px;background:rgba(255,255,255,0.08);
+      border:1px solid var(--stroke);padding:1px 5px;border-radius:6px;
+    }
+    .md pre{
+      background:rgba(0,0,0,0.26);border:1px solid var(--stroke);border-radius:var(--r3);
+      padding:11px;overflow:auto;margin:10px 0;
+    }
+    html[data-theme="light"] .md pre{background:rgba(10,18,60,0.07);}
+    .md pre code{background:transparent;border:none;padding:0;border-radius:0;}
+    .md blockquote{
+      border-left:3px solid var(--accent);
+      margin:8px 0 8px 8px;padding:4px 12px;color:var(--muted);
+      background:rgba(123,95,255,0.06);border-radius:0 6px 6px 0;
+    }
+    .md strong{font-weight:700;} .md em{font-style:italic;color:var(--muted);}
+
+    .empty-state{
+      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:12px;padding:40px;color:var(--muted2);text-align:center;
+    }
+    .empty-state .icon{font-size:48px;opacity:0.5;animation:float 3s ease-in-out infinite;}
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+    .empty-state p{font-size:13px;max-width:320px;line-height:1.6;margin:0;}
+
+    .model-mini{font-size:10.5px;color:var(--accent2);font-family:var(--mono);}
+
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:99px;}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.22);}
+    html[data-theme="light"] ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.14);}
+  </style>
+</head>
+
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark"></div>
+      <div class="brand-text">
+        <h1>Puter AI Studio Pro</h1>
+        <div class="sub">Chat · Compare · Logs · modelos dinâmicos · persistência (Puter/Local)</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn ghost icon" id="btnCollapse" title="Colapsar sidebar (Ctrl+B)">☰</button>
+      <div class="pill" id="authPill" title="Quando rodando no Puter, o app também cria um menu nativo no topo da janela.">
+        <span class="dot" id="authDot"></span>
+        <span id="authText">SDK carregando…</span>
+      </div>
+      <button class="btn sm" id="btnSignIn">Entrar</button>
+      <button class="btn sm" id="btnReload">↻ Modelos</button>
+      <button class="btn sm" id="btnTheme">◑ Tema</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="sidebar" id="sidebar">
+      <div class="card">
+        <div class="head">
+          <div class="title">Prompt</div>
+          <div class="hint hide-collapsed">
+            <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> envia
+          </div>
+        </div>
+        <div class="body hide-collapsed">
+          <label for="system">System prompt</label>
+          <textarea id="system" placeholder="Ex.: Você é um assistente técnico. Responda em português, de forma direta."></textarea>
+
+          <div style="height:10px"></div>
+
+          <label for="prompt">Mensagem</label>
+          <div class="prompt-wrap">
+            <textarea id="prompt" placeholder="Digite sua pergunta… (↑↓ para histórico)" rows="3"></textarea>
+            <span class="prompt-history-hint">↑↓</span>
+          </div>
+          <div class="char-counter" id="charCounter">0 / ∞</div>
+
+          <div class="row" style="margin-top:10px;">
+            <button class="btn primary col" id="btnSend">▶ Enviar</button>
+            <button class="btn col" id="btnRegen" title="Regenerar última resposta">↺</button>
+            <button class="btn col" id="btnStop" disabled>■ Parar</button>
+          </div>
+          <div class="row">
+            <button class="btn col" id="btnClear">Limpar chat</button>
+            <button class="btn col" id="btnCopy">Copiar última</button>
+            <button class="btn col" id="btnExport">Exportar</button>
+          </div>
+
+          <div class="err-box" id="errBox"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="head">
+          <div class="title">Modelos</div>
+          <div class="hint hide-collapsed"><span id="modelCount">—</span></div>
+        </div>
+        <div class="body hide-collapsed">
+          <div class="row">
+            <div class="col select-wrap">
+              <label for="modelSearch">Buscar</label>
+              <input id="modelSearch" type="text" placeholder="Filtrar nome / id / provider…" autocomplete="off" />
+              <button class="clear-btn" id="btnClearSearch" title="Limpar busca">×</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col select-wrap">
+              <label for="providerFilter">Provider</label>
+              <select id="providerFilter"></select>
+            </div>
+            <div class="col select-wrap">
+              <label for="sortBy">Ordenar</label>
+              <select id="sortBy">
+                <option value="recommended">Recomendado</option>
+                <option value="alpha">A → Z</option>
+                <option value="context_desc">Maior contexto</option>
+                <option value="cost_in_asc">Mais barato</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="modelSelect">Modelo principal</label>
+              <select id="modelSelect" size="7"></select>
+              <div class="meta-line">
+                <span class="model-mini" id="modelMiniMeta">—</span>
+                <span id="persistBadge">persist: auto</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sep"></div>
+
+          <label class="toggle-row">
+            <input type="checkbox" id="optStream" />
+            <span>Streaming</span>
+            <span class="tgl-desc">melhor UX</span>
+          </label>
+          <div style="height:6px"></div>
+          <label class="toggle-row">
+            <input type="checkbox" id="optTestMode" />
+            <span>Test mode</span>
+            <span class="tgl-desc">quando suportado</span>
+          </label>
+
+          <div class="row" style="margin-top:10px;">
+            <div class="col sm">
+              <label for="optMaxTokens">Max tokens</label>
+              <input id="optMaxTokens" type="number" min="16" step="64" placeholder="auto" />
+            </div>
+            <div class="col">
+              <label for="optTemp">Temperature</label>
+              <input id="optTemp" type="number" min="0" max="2" step="0.1" value="0.7" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col select-wrap">
+              <label for="optReason">Reasoning effort</label>
+              <select id="optReason">
+                <option value="">auto</option>
+                <option value="none">none</option>
+                <option value="minimal">minimal</option>
+                <option value="low">low</option>
+                <option value="medium" selected>medium</option>
+                <option value="high">high</option>
+                <option value="xhigh">xhigh</option>
+              </select>
+            </div>
+            <div class="col select-wrap">
+              <label for="optVerbosity">Verbosity</label>
+              <select id="optVerbosity">
+                <option value="">auto</option>
+                <option value="low">low</option>
+                <option value="medium" selected>medium</option>
+                <option value="high">high</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sep"></div>
+
+          <label for="compareSelect">Compare (máx. 2)</label>
+          <select id="compareSelect" multiple size="5"></select>
+
+          <div class="meta-line">
+            <span>Selecione 2 modelos → aba Compare</span>
+            <span><span class="kbd">Ctrl</span>+<span class="kbd">K</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="head">
+          <div class="title">Detalhes</div>
+          <div class="hint hide-collapsed">ctx / cost / tokens</div>
+        </div>
+        <div class="body hide-collapsed">
+          <div class="details-body" id="modelDetails">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="tabs">
+        <div class="tab-left">
+          <div class="tab active" data-tab="chat">💬 Chat</div>
+          <div class="tab" data-tab="compare">⚖️ Compare</div>
+          <div class="tab" data-tab="logs">📋 Logs</div>
+        </div>
+        <div class="tab-right">
+          <div class="status-line" id="runMeta">Pronto.</div>
+          <div class="loader" id="loader">
+            <div class="spin"></div>
+            <span id="loaderText">Processando…</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="view active" id="view-chat">
+        <div class="chat-body" id="chatBody">
+          <div class="empty-state" id="emptyState">
+            <div class="icon">✦</div>
+            <p>Nenhuma mensagem ainda.<br>Digite na barra lateral e clique <strong>Enviar</strong>.</p>
+          </div>
+        </div>
+        <div class="chat-foot">
+          <div style="font-size:11px;color:var(--muted2);">
+            <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> envia ·
+            <span class="kbd">↑</span><span class="kbd">↓</span> histórico ·
+            <span class="kbd">Ctrl</span>+<span class="kbd">K</span> busca
+          </div>
+          <div style="font-size:11px;color:var(--muted2);font-family:var(--mono);" id="footMeta">—</div>
+        </div>
+      </div>
+
+      <div class="view" id="view-compare">
+        <div class="compare-wrap" id="compareWrap">
+          <div class="cmp-card" id="cmpCardA">
+            <div class="cmp-head">
+              <div class="cmp-title">Modelo A <span id="cmpAName">—</span></div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <span class="verdict-badge" id="verdictA">—</span>
+                <button class="btn sm" id="btnRunCompare">▶ Comparar</button>
+              </div>
+            </div>
+            <div class="cmp-body"><div class="cmp-out md" id="cmpAOut">Selecione 2 modelos no painel e clique Comparar.</div></div>
+            <div class="cmp-meta" id="cmpAMeta">—</div>
+          </div>
+
+          <div class="cmp-card" id="cmpCardB">
+            <div class="cmp-head">
+              <div class="cmp-title">Modelo B <span id="cmpBName">—</span></div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <span class="verdict-badge" id="verdictB">—</span>
+                <button class="btn sm" id="btnSwapCompare">↔ Trocar</button>
+              </div>
+            </div>
+            <div class="cmp-body"><div class="cmp-out md" id="cmpBOut">—</div></div>
+            <div class="cmp-meta" id="cmpBMeta">—</div>
+          </div>
+        </div>
+        <div class="chat-foot">
+          <div style="font-size:11px;color:var(--muted2);">Compare roda em paralelo. Use prompts curtos para menor latência.</div>
+          <div style="font-size:11px;color:var(--muted2);font-family:var(--mono);" id="cmpFoot">—</div>
+        </div>
+      </div>
+
+      <div class="view" id="view-logs">
+        <div class="logs-wrap">
+          <div class="row">
+            <button class="btn sm" id="btnCopyLogs">Copiar logs</button>
+            <button class="btn sm danger" id="btnClearLogs">Limpar</button>
+            <button class="btn sm" id="btnPersistNow">💾 Salvar agora</button>
+          </div>
+          <div class="log-box" id="logBox">Logs aparecerão aqui…</div>
+        </div>
+        <div class="chat-foot">
+          <div style="font-size:11px;color:var(--muted2);">Logs incluem erros, metadados e métricas de tempo.</div>
+          <div style="font-size:11px;color:var(--muted2);font-family:var(--mono);" id="logsFoot">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://js.puter.com/v2/" defer></script>
+
+<script>
+const $  = (id) => document.getElementById(id);
+
+const APP = {
+  LS_KEY: "puter_ai_studio_pro_v3",
+  STATE_FILE: "puter-ai-studio/state.json",   // Puter FS (relativo ao app root)
+  EXPORT_DEFAULT: () => `puter-ai-${Date.now()}.json`,
+};
+
+const delay = (ms) => new Promise(r => setTimeout(r, ms));
+
+function isPuterRuntime() {
+  return !!(window.puter && (puter.ui || puter.fs || puter.ai));
+}
+
+// ─── Toast ─────────────────────────────────────────────
+let _toastTimer = null;
+function toast(msg, type = "info", ms = 2800) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.className = "toast on" + (type !== "info" ? " " + type : "");
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove("on"), ms);
+}
+
+// ─── Timestamp ──────────────────────────────────────────
+function stamp() {
+  return new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
+// ─── Log ────────────────────────────────────────────────
+function logLine(line, level = "info") {
+  const box = $("logBox");
+  const classes = { error: "log-line-err", ok: "log-line-ok", warn: "log-line-warn" };
+  const span = document.createElement("span");
+  if (classes[level]) span.className = classes[level];
+  span.textContent = `[${stamp()}] ${line}\n`;
+  box.appendChild(span);
+  box.scrollTop = box.scrollHeight;
+  $("logsFoot").textContent = `último: ${stamp()}`;
+}
+
+// ─── Puter readiness ────────────────────────────────────
+async function waitForPuter(ms = 15000) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < ms) {
+    if (window.puter?.ai?.chat && window.puter?.auth?.isSignedIn) return true;
+    if (window.puter?.ai?.chat && window.puter?.auth) return true;
+    await delay(80);
+  }
+  return false;
+}
+
+// puter.auth.isSignedIn() may be bool OR Promise<bool>
+async function isSignedIn() {
+  try {
+    const r = puter.auth.isSignedIn();
+    return r instanceof Promise ? await r : !!r;
+  } catch { return false; }
+}
+
+// ─── Auth UI ─────────────────────────────────────────────
+function setAuthUI({ state, text }) {
+  const dot = $("authDot");
+  dot.classList.remove("ok", "bad");
+  if (state === "ok")  dot.classList.add("ok");
+  if (state === "bad") dot.classList.add("bad");
+  $("authText").textContent = text;
+}
+
+// ─── Formatters ──────────────────────────────────────────
+function fmtK(n) {
+  if (!Number.isFinite(+n)) return String(n);
+  const x = +n;
+  if (x >= 1e6) return (x/1e6).toFixed(1).replace(/\.0$/, "") + "M";
+  if (x >= 1e3) return (x/1e3).toFixed(1).replace(/\.0$/, "") + "K";
+  return String(x);
+}
+function isOpenAI(id, prov) {
+  const s = (id || "").toLowerCase(), p = (prov || "").toLowerCase();
+  return s.startsWith("openai/") || s.startsWith("gpt-") || s.startsWith("o1") || s.startsWith("o3") || p === "openai";
+}
+
+// ─── Lightweight markdown ────────────────────────────────
+function mdToHtml(md) {
+  const lines = String(md || "").split("\n");
+  let html = "", inCode = false, listOpen = false;
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const inline = s => esc(s)
+    .replace(/`([^`]+)`/g, (_, p) => `<code>${esc(p)}</code>`)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  const closeList = () => { if (listOpen) { html += "</ul>"; listOpen = false; } };
+
+  for (const raw of lines) {
+    if (raw.startsWith("```")) {
+      closeList();
+      if (!inCode) { inCode = true; html += `<pre><code>`; }
+      else         { inCode = false; html += `</code></pre>`; }
+      continue;
+    }
+    if (inCode) { html += esc(raw) + "\n"; continue; }
+
+    const h3 = raw.match(/^### (.+)/);
+    const h2 = raw.match(/^## (.+)/);
+    const h1 = raw.match(/^# (.+)/);
+    const li = raw.match(/^[-*] (.+)/);
+    const bq = raw.match(/^> (.+)/);
+
+    if (h3) { closeList(); html += `<h3>${inline(h3[1])}</h3>`; continue; }
+    if (h2) { closeList(); html += `<h2>${inline(h2[1])}</h2>`; continue; }
+    if (h1) { closeList(); html += `<h1>${inline(h1[1])}</h1>`; continue; }
+    if (bq) { closeList(); html += `<blockquote>${inline(bq[1])}</blockquote>`; continue; }
+    if (li) { if (!listOpen) { html += "<ul>"; listOpen = true; } html += `<li>${inline(li[1])}</li>`; continue; }
+
+    closeList();
+    if (raw.trim() === "") { html += `<div style="height:5px"></div>`; continue; }
+    html += `<p>${inline(raw)}</p>`;
+  }
+  closeList();
+  if (inCode) html += "</code></pre>";
+  return html;
+}
+function setMd(el, text) { el.innerHTML = mdToHtml(text); }
+
+/* ═══════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════ */
+let MODELS       = [];
+let FILTERED     = [];
+let MESSAGES     = [];
+let RUN_ID       = 0;
+let LAST_TEXT    = "";
+let LAST_MODEL   = "";
+let STOP_REQ     = false;
+let PROMPT_HIST  = [];
+let HIST_IDX     = -1;
+
+/* ═══════════════════════════════════════════════════════════
+   PERSISTENCE (Puter FS + localStorage fallback)
+═══════════════════════════════════════════════════════════ */
+function buildStateObject() {
+  return {
+    v: 3,
+    exported_at: new Date().toISOString(),
+    theme:             document.documentElement.getAttribute("data-theme") || "dark",
+    collapsed:         $("sidebar").classList.contains("collapsed"),
+    system:            $("system").value,
+    optStream:         $("optStream").checked,
+    optTestMode:       $("optTestMode").checked,
+    optMaxTokens:      $("optMaxTokens").value,
+    optTemp:           $("optTemp").value,
+    optReason:         $("optReason").value,
+    optVerbosity:      $("optVerbosity").value,
+    modelSelect:       $("modelSelect").value,
+    providerFilter:    $("providerFilter").value,
+    sortBy:            $("sortBy").value,
+    modelSearch:       $("modelSearch").value,
+    compareSelected:   Array.from($("compareSelect").selectedOptions).map(o => o.value),
+    messages:          MESSAGES.slice(-80),
+    promptHist:        PROMPT_HIST.slice(-60),
+  };
+}
+
+async function saveState() {
+  const st = buildStateObject();
+
+  // Always keep a local fallback
+  try { localStorage.setItem(APP.LS_KEY, JSON.stringify(st)); } catch {}
+
+  // If Puter FS available, persist to cloud storage too
+  if (window.puter?.fs?.write) {
+    try {
+      await puter.fs.write(APP.STATE_FILE, JSON.stringify(st, null, 2), {
+        createMissingParents: true,
+        overwrite: true,
+      });
+      $("persistBadge").textContent = "persist: Puter+Local";
+      logLine("state: salvo (Puter FS)", "ok");
+      return;
+    } catch (e) {
+      logLine("state: falha Puter FS — " + (e?.message || e), "warn");
+    }
+  }
+  $("persistBadge").textContent = "persist: Local";
+  logLine("state: salvo (local)", "ok");
+}
+
+async function loadSavedState() {
+  // Prefer Puter FS if available
+  if (window.puter?.fs?.read) {
+    try {
+      const blob = await puter.fs.read(APP.STATE_FILE);
+      const txt  = await blob.text();
+      const st   = JSON.parse(txt);
+      $("persistBadge").textContent = "persist: Puter+Local";
+      return st;
+    } catch {}
+  }
+  // Fallback localStorage
+  try {
+    const raw = localStorage.getItem(APP.LS_KEY);
+    if (!raw) return null;
+    $("persistBadge").textContent = "persist: Local";
+    return JSON.parse(raw);
+  } catch { return null; }
+}
+
+function applySettings(st) {
+  if (!st) return;
+
+  if (st.theme) document.documentElement.setAttribute("data-theme", st.theme);
+  if (st.collapsed) $("sidebar").classList.add("collapsed");
+  if (typeof st.system === "string")       $("system").value       = st.system;
+  if (typeof st.optStream === "boolean")   $("optStream").checked  = st.optStream;
+  if (typeof st.optTestMode === "boolean") $("optTestMode").checked= st.optTestMode;
+  if (st.optMaxTokens != null) $("optMaxTokens").value = st.optMaxTokens;
+  if (st.optTemp != null)      $("optTemp").value      = st.optTemp;
+  if (st.optReason != null)    $("optReason").value    = st.optReason;
+  if (st.optVerbosity != null) $("optVerbosity").value = st.optVerbosity;
+
+  if (Array.isArray(st.messages)) {
+    MESSAGES = st.messages;
+    renderChat();
+  }
+  if (Array.isArray(st.promptHist)) PROMPT_HIST = st.promptHist;
+
+  // delayed: provider/sort/search/modelSelect/compare applied after models load
+}
+
+let _saveTimer = null;
+function debounceSave() {
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(() => { saveState(); }, 550);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MODEL HELPERS
+═══════════════════════════════════════════════════════════ */
+function normalizeModel(m) {
+  const id       = m.id ?? "";
+  const provider = m.provider ?? "";
+  const name     = m.name ?? "";
+  const context  = m.context ?? null;
+  const max_tok  = m.max_tokens ?? null;
+  const cost     = m.cost ?? null;
+  const aliases  = m.aliases ?? [];
+  const free     = id.includes(":free") || (cost && cost.input === 0 && cost.output === 0);
+  const tags     = [
+    free ? "FREE" : "",
+    context ? `ctx ${fmtK(context)}` : "",
+    max_tok ? `out ${fmtK(max_tok)}` : ""
+  ].filter(Boolean).join(" · ");
+  const label = `${provider || "?"} — ${name || id}${tags ? "  ·  " + tags : ""}`;
+  return { id, provider, name, context, max_tokens: max_tok, cost, aliases, _label: label, _free: free };
+}
+
+function sortModels(list, mode) {
+  const arr = [...list];
+  if (mode === "alpha")        return arr.sort((a,b) => (a.name||a.id).localeCompare(b.name||b.id));
+  if (mode === "context_desc") return arr.sort((a,b) => (+b.context||0) - (+a.context||0) || a._label.localeCompare(b._label));
+  if (mode === "cost_in_asc")  return arr.sort((a,b) => (a.cost?.input??Infinity) - (b.cost?.input??Infinity) || a._label.localeCompare(b._label));
+  return arr.sort((a,b) => {
+    if (a._free !== b._free) return a._free ? -1 : 1;
+    const ctx = (+b.context||0) - (+a.context||0);
+    if (ctx !== 0) return ctx;
+    return (a.cost?.input??1e18) - (b.cost?.input??1e18) || a._label.localeCompare(b._label);
+  });
+}
+
+function buildProviderOptions(models) {
+  const provs = [...new Set(models.map(m => m.provider).filter(Boolean))].sort();
+  const sel = $("providerFilter");
+  const cur = sel.value;
+  sel.innerHTML = `<option value="__all__">Todos</option>`;
+  for (const p of provs) {
+    const o = document.createElement("option");
+    o.value = p; o.textContent = p;
+    if (p === cur) o.selected = true;
+    sel.appendChild(o);
+  }
+}
+
+function applyFilters() {
+  const q    = $("modelSearch").value.trim().toLowerCase();
+  const prov = $("providerFilter").value;
+  const sort = $("sortBy").value;
+
+  FILTERED = MODELS.filter(m => {
+    if (prov && prov !== "__all__" && m.provider !== prov) return false;
+    if (!q) return true;
+    return `${m.id} ${m.provider} ${m.name} ${m.aliases.join(" ")}`.toLowerCase().includes(q);
+  });
+  FILTERED = sortModels(FILTERED, sort);
+  populateModelSelect(FILTERED);
+  populateCompareSelect(FILTERED);
+}
+
+function populateModelSelect(models) {
+  const sel = $("modelSelect");
+  const cur = sel.value;
+  sel.innerHTML = "";
+  const groups = {};
+  for (const m of models) {
+    const k = m.provider || "?";
+    (groups[k] = groups[k] || []).push(m);
+  }
+  for (const p of Object.keys(groups).sort()) {
+    const og = document.createElement("optgroup");
+    og.label = p;
+    for (const m of groups[p]) {
+      const o = document.createElement("option");
+      o.value = m.id; o.textContent = m._label;
+      o.dataset.provider = m.provider;
+      if (m.id === cur) o.selected = true;
+      og.appendChild(o);
+    }
+    sel.appendChild(og);
+  }
+  if (!sel.value && sel.options.length) sel.options[0].selected = true;
+  $("modelCount").textContent = `${models.length} / ${MODELS.length}`;
+  updateDetails();
+}
+
+function populateCompareSelect(models) {
+  const sel  = $("compareSelect");
+  const prev = new Set(Array.from(sel.selectedOptions).map(o => o.value));
+  sel.innerHTML = "";
+  for (const m of models) {
+    const o = document.createElement("option");
+    o.value = m.id; o.textContent = m._label;
+    o.dataset.provider = m.provider;
+    if (prev.has(m.id)) o.selected = true;
+    sel.appendChild(o);
+  }
+  limitCompare2();
+}
+
+function limitCompare2() {
+  const sel  = $("compareSelect");
+  const opts = Array.from(sel.selectedOptions);
+  if (opts.length <= 2) return;
+  for (let i = 2; i < opts.length; i++) opts[i].selected = false;
+  toast("Compare: máximo 2 modelos.", "warn");
+}
+
+function getSelectedModel() {
+  const sel = $("modelSelect");
+  const id  = sel.value || "";
+  const opt = sel.selectedOptions?.[0];
+  const prov = opt?.dataset?.provider || "";
+  return MODELS.find(x => x.id === id) || { id, provider: prov };
+}
+
+function getCompareModels() {
+  return Array.from($("compareSelect").selectedOptions)
+    .slice(0, 2)
+    .map(o => MODELS.find(m => m.id === o.value))
+    .filter(Boolean);
+}
+
+function updateDetails() {
+  const m = getSelectedModel();
+  const cost = m.cost;
+  const lines = [];
+  const kv = (k, v) => `<span class="details-key">${k}:</span> <span class="details-val">${v}</span>`;
+
+  lines.push(kv("id", m.id || "—"));
+  lines.push(kv("provider", m.provider || "—"));
+  if (m.name)            lines.push(kv("name", m.name));
+  if (m.aliases?.length) lines.push(kv("aliases", m.aliases.join(", ")));
+  if (m.context)         lines.push(kv("context", `${m.context} (${fmtK(m.context)})`));
+  if (m.max_tokens)      lines.push(kv("max_tokens", `${m.max_tokens} (${fmtK(m.max_tokens)})`));
+  if (cost) {
+    lines.push(kv("cost.input", cost.input));
+    lines.push(kv("cost.output", cost.output));
+    const base = +(cost.tokens || 1e6);
+    if (base > 0) {
+      const pi = ((+cost.input  || 0) / base * 1e6).toFixed(0);
+      const po = ((+cost.output || 0) / base * 1e6).toFixed(0);
+      lines.push(kv("per 1M tokens", `in ${pi}¢ · out ${po}¢`));
+    }
+  } else { lines.push(kv("cost", "—")); }
+
+  $("modelDetails").innerHTML = lines.join("\n");
+  $("modelMiniMeta").textContent = `${m.provider || "—"} · ${m.name || m.id || "—"}`;
+  debounceSave();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CHAT UI
+═══════════════════════════════════════════════════════════ */
+function updateEmptyState() {
+  const empty = $("emptyState");
+  if (empty) empty.style.display = MESSAGES.filter(m => m.role !== "system").length ? "none" : "flex";
+}
+
+function renderChat() {
+  const box = $("chatBody");
+  Array.from(box.querySelectorAll(".msg")).forEach(el => el.remove());
+  const visible = MESSAGES.filter(m => m.role !== "system");
+  for (let i = 0; i < visible.length; i++) {
+    const msg = visible[i];
+    box.appendChild(buildMsgEl(msg, i));
+  }
+  box.scrollTop = box.scrollHeight;
+  updateEmptyState();
+}
+
+function buildMsgEl(msg, idx) {
+  const wrap = document.createElement("div");
+  wrap.className = "msg " + (msg.role === "user" ? "user" : "assistant");
+  wrap.dataset.idx = idx;
+
+  const av = document.createElement("div");
+  av.className = "avatar";
+  av.textContent = msg.role === "user" ? "U" : "AI";
+
+  const content = document.createElement("div");
+  content.className = "msg-content";
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble md";
+  bubble.innerHTML = mdToHtml(msg.content ?? "");
+
+  const actions = document.createElement("div");
+  actions.className = "msg-actions";
+
+  const stampEl = document.createElement("span");
+  stampEl.className = "stamp";
+  stampEl.textContent = msg.ts ? new Date(msg.ts).toLocaleTimeString() : stamp();
+
+  const copyBtn = document.createElement("button");
+  copyBtn.className = "btn ghost sm";
+  copyBtn.title = "Copiar mensagem";
+  copyBtn.textContent = "⎘ Copiar";
+  copyBtn.addEventListener("click", () => copyText(msg.content));
+
+  actions.appendChild(stampEl);
+  actions.appendChild(copyBtn);
+  content.appendChild(bubble);
+  content.appendChild(actions);
+  wrap.appendChild(av);
+  wrap.appendChild(content);
+  return wrap;
+}
+
+function pushMessage(role, content) {
+  MESSAGES.push({ role, content, ts: Date.now() });
+  const box = $("chatBody");
+  const el = buildMsgEl(MESSAGES[MESSAGES.length - 1], MESSAGES.length - 1);
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+  updateEmptyState();
+  debounceSave();
+}
+
+function updateLastBubble(text) {
+  const bubbles = $("chatBody").querySelectorAll(".msg.assistant .bubble");
+  if (!bubbles.length) return;
+  const last = bubbles[bubbles.length - 1];
+  last.innerHTML = mdToHtml(text);
+}
+
+function setBusy(on, text = "Processando…") {
+  $("btnSend").disabled  = on;
+  $("btnRegen").disabled = on;
+  $("btnStop").disabled  = !on;
+  $("loaderText").textContent = text;
+  $("loader").classList.toggle("on", on);
+}
+
+function setErr(text) {
+  const e = $("errBox");
+  e.classList.toggle("on", !!text);
+  e.textContent = text || "";
+  if (text) logLine("error: " + text.split("\n")[0], "error");
+}
+
+function normErr(e) {
+  if (!e) return "Erro desconhecido.";
+  if (typeof e === "string") return e;
+  if (e.message) return e.message;
+  try { return JSON.stringify(e); } catch { return String(e); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NATIVE MENU (Puter)
+═══════════════════════════════════════════════════════════ */
+function uiAlert(title, message) {
+  if (window.puter?.ui?.alert) return puter.ui.alert(message, title).catch(()=>{});
+  alert((title ? title + "\n\n" : "") + message);
+}
+
+function installNativeMenu() {
+  if (!window.puter?.ui?.setMenubar) {
+    return;
+  }
+  const items = [
+    {
+      label: "File",
+      items: [
+        { label: "New Chat", action: () => clearChat() },
+        { label: "Import…", action: () => importSession() },
+        { label: "Export…", action: () => exportSession() },
+        { label: "Save Workspace", action: () => saveState() },
+        { label: "Reload Models", action: () => loadModels() },
+        {
+          label: "Account",
+          items: [
+            { label: "Sign In", action: () => doSignIn() },
+            { label: "Sign Out", action: () => doSignOut() },
+          ]
+        },
+        { label: "Exit", action: () => { try { puter.exit?.(0); } catch {} } },
+      ]
+    },
+    {
+      label: "Edit",
+      items: [
+        { label: "Copy last answer", action: () => copyText(LAST_TEXT) },
+        { label: "Copy logs", action: () => copyText($("logBox").textContent) },
+        { label: "Clear logs", action: () => clearLogs() },
+      ]
+    },
+    {
+      label: "View",
+      items: [
+        { label: "Toggle Theme", action: () => toggleTheme() },
+        { label: "Toggle Sidebar", action: () => toggleSidebar() },
+        {
+          label: "Tabs",
+          items: [
+            { label: "Chat", action: () => setTab("chat") },
+            { label: "Compare", action: () => setTab("compare") },
+            { label: "Logs", action: () => setTab("logs") },
+          ]
+        }
+      ]
+    },
+    {
+      label: "AI",
+      items: [
+        { label: "Send (Ctrl+Enter)", action: () => askAI() },
+        { label: "Regenerate", action: () => regenLast() },
+        { label: "Stop", action: () => { STOP_REQ = true; logLine("chat: stop (menu)"); toast("Parando…", "warn"); } },
+        { label: "Run Compare", action: () => runCompare() },
+      ]
+    },
+    {
+      label: "Help",
+      items: [
+        { label: "Shortcuts", action: () => uiAlert("Atalhos", "Ctrl+Enter: enviar\nCtrl+K: buscar modelos\nCtrl+B: colapsar sidebar\nCtrl+1/2/3: Chat/Compare/Logs\n↑↓ no Prompt: histórico") },
+        { label: "About", action: () => uiAlert("Puter AI Studio Pro", "Menubar nativo ativo (quando suportado).\nPersistência: Puter FS + fallback local.\n\nDica: Use File → Export/Import para trocar sessões.") },
+      ]
+    },
+  ];
+
+  try {
+    puter.ui.setMenubar({ items });
+    logLine("ui: menubar nativo instalado", "ok");
+  } catch (e) {
+    logLine("ui: falha ao instalar menubar — " + normErr(e), "warn");
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════════════════════ */
+async function refreshAuth() {
+  try {
+    const ok = await isSignedIn();
+    if (ok) {
+      setAuthUI({ state: "ok", text: "Autenticado" });
+      $("btnSignIn").textContent = "Conta";
+      try {
+        const u = await puter.auth.getUser?.();
+        if (u?.username || u?.email)
+          $("authText").textContent = `✓ ${u.username || u.email}`;
+      } catch {}
+    } else {
+      setAuthUI({ state: "bad", text: "Não logado" });
+      $("btnSignIn").textContent = "Entrar";
+    }
+  } catch { setAuthUI({ state: "bad", text: "Auth erro" }); }
+}
+
+async function doSignIn() {
+  setErr("");
+  try {
+    logLine("auth: signIn()");
+    await puter.auth.signIn();
+    toast("Login concluído!", "ok");
+    await refreshAuth();
+    await loadModels();
+  } catch (e) {
+    const msg = normErr(e);
+    setErr("Falha no login.\n\n" + msg + "\n\nDica: permita popups e tente novamente.");
+  }
+}
+
+async function doSignOut() {
+  setErr("");
+  try {
+    logLine("auth: signOut()");
+    await puter.auth.signOut();
+    toast("Logout concluído.", "ok");
+    await refreshAuth();
+    MODELS = [];
+    FILTERED = [];
+    $("modelSelect").innerHTML = "";
+    $("compareSelect").innerHTML = "";
+    $("modelCount").textContent = "—";
+    $("modelDetails").textContent = "—";
+  } catch (e) {
+    setErr("Falha no logout.\n\n" + normErr(e));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LOAD MODELS
+═══════════════════════════════════════════════════════════ */
+async function loadModels() {
+  setErr("");
+  $("runMeta").textContent = "Carregando modelos…";
+  try {
+    if (!window.puter?.ai?.listModels) throw new Error("puter.ai.listModels não disponível.");
+    logLine("models: listModels()");
+    const raw = await puter.ai.listModels();
+    MODELS = (raw || []).map(normalizeModel);
+    if (!MODELS.length) throw new Error("Nenhum modelo retornado. Faça login.");
+
+    buildProviderOptions(MODELS);
+
+    const st = await loadSavedState();
+    if (st?.providerFilter) $("providerFilter").value = st.providerFilter;
+    if (st?.sortBy)         $("sortBy").value         = st.sortBy;
+    if (st?.modelSearch)    $("modelSearch").value    = st.modelSearch;
+
+    applyFilters();
+
+    if (st?.modelSelect) {
+      $("modelSelect").value = st.modelSelect;
+      updateDetails();
+    }
+    if (Array.isArray(st?.compareSelected)) {
+      const sel = $("compareSelect");
+      const set = new Set(st.compareSelected.slice(0, 2));
+      Array.from(sel.options).forEach(o => { o.selected = set.has(o.value); });
+      updateCompareHeader();
+    }
+
+    $("runMeta").textContent = `${MODELS.length} modelos carregados.`;
+    toast(`${MODELS.length} modelos carregados!`, "ok");
+    logLine(`models: ${MODELS.length} carregados`, "ok");
+  } catch (e) {
+    const msg = normErr(e);
+    $("runMeta").textContent = "Falha ao carregar modelos.";
+    setErr("Erro ao carregar modelos.\n\n" + msg +
+      "\n\nCausas comuns:\n• Não autenticado\n• Popup bloqueado\n• SDK não carregou\n\nClique em 'Entrar' e depois '↻ Modelos'.");
+    logLine("models: falha — " + msg, "error");
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AI CALL
+═══════════════════════════════════════════════════════════ */
+function buildOptions(modelObj) {
+  const opt = { model: modelObj.id, stream: $("optStream").checked };
+  const mt = $("optMaxTokens").value.trim();
+  const tp = $("optTemp").value.trim();
+  if (mt) opt.max_tokens = +mt;
+  if (tp) opt.temperature = +tp;
+  if (isOpenAI(modelObj.id, modelObj.provider)) {
+    const r = $("optReason").value;
+    const v = $("optVerbosity").value;
+    if (r) opt.reasoning_effort = r;
+    if (v) opt.text_verbosity = v;
+  }
+  return opt;
+}
+
+function buildMessages(userText) {
+  const sys  = $("system").value.trim();
+  const hist = MESSAGES.filter(m => m.role !== "system");
+  const msg  = { role: "user", content: userText };
+  return sys ? [{ role: "system", content: sys }, ...hist, msg] : [...hist, msg];
+}
+
+async function callAI(messages, modelObj, opt, testMode) {
+  const tries = [modelObj.id];
+  const prov  = modelObj.provider;
+  const id    = modelObj.id;
+  if (prov && id && !id.includes("/")) tries.push(`${prov}/${id}`);
+  if (id.includes("/")) tries.push(id.split("/").pop());
+
+  let lastErr;
+  for (const model of tries) {
+    try {
+      LAST_MODEL = model;
+      logLine(`chat: model=${model} stream=${!!opt.stream} test=${testMode}`);
+      return await puter.ai.chat(messages, testMode, { ...opt, model });
+    } catch (e) {
+      lastErr = e;
+      const msg = normErr(e).toLowerCase();
+      logLine(`chat: retry fallback model=${model} err=${msg.slice(0,100)}`, "warn");
+      if (!/(model|not found|unknown)/i.test(msg)) throw e;
+    }
+  }
+  throw lastErr || new Error("Todos os modelos falharam.");
+}
+
+async function ensureAuth() {
+  const sdkOk = await waitForPuter(6000);
+  if (!sdkOk) { setErr("SDK Puter não carregou. Reexecute a célula/página."); return false; }
+  await refreshAuth();
+  if (!await isSignedIn()) {
+    setErr("Não autenticado. Clique em 'Entrar' (permita popups).");
+    return false;
+  }
+  return true;
+}
+
+async function askAI(userText) {
+  setErr("");
+  const text = (userText || $("prompt").value).trim();
+  if (!text) { toast("Digite uma mensagem.", "warn"); return; }
+  if (!await ensureAuth()) return;
+
+  const modelObj = getSelectedModel();
+  const opt      = buildOptions(modelObj);
+  const testMode = $("optTestMode").checked;
+  const messages = buildMessages(text);
+
+  PROMPT_HIST.unshift(text);
+  if (PROMPT_HIST.length > 60) PROMPT_HIST.pop();
+  HIST_IDX = -1;
+
+  const myRun = ++RUN_ID;
+  STOP_REQ = false;
+  setBusy(true, opt.stream ? "Streaming…" : "Gerando resposta…");
+  setErr("");
+
+  pushMessage("user", text);
+  $("prompt").value = "";
+  updateCharCounter();
+
+  $("runMeta").textContent = `${modelObj.provider || "—"} · ${modelObj.name || modelObj.id || "—"}`;
+  const t0 = performance.now();
+
+  try {
+    if (opt.stream) {
+      const resp = await callAI(messages, modelObj, opt, testMode);
+      let acc = "";
+      pushMessage("assistant", "");
+      const lastIdx = MESSAGES.length - 1;
+
+      if (!resp?.[Symbol.asyncIterator]) throw new Error("Streaming não disponível. Desative a opção.");
+
+      for await (const chunk of resp) {
+        if (STOP_REQ || RUN_ID !== myRun) break;
+        acc += chunk?.text ?? "";
+        MESSAGES[lastIdx].content = acc;
+        LAST_TEXT = acc;
+        updateLastBubble(acc);
+      }
+      if (STOP_REQ) toast("Parado.", "warn");
+    } else {
+      const resp = await callAI(messages, modelObj, opt, testMode);
+      const txt  = resp?.message?.content ?? String(resp);
+      LAST_TEXT  = txt;
+      pushMessage("assistant", txt);
+    }
+
+    const dt = (performance.now() - t0) / 1000;
+    $("footMeta").textContent = `${LAST_MODEL || modelObj.id} · ${dt.toFixed(1)}s`;
+    logLine(`chat: ok model=${LAST_MODEL} t=${dt.toFixed(1)}s chars=${LAST_TEXT.length}`, "ok");
+    debounceSave();
+  } catch (e) {
+    setErr(
+      "Erro em puter.ai.chat().\n\n" + normErr(e) +
+      "\n\nCausas comuns:\n• Não autenticado\n• Modelo sem suporte\n• Streaming instável — desative"
+    );
+    $("runMeta").textContent = "Falha.";
+    logLine("chat: erro — " + normErr(e), "error");
+  } finally {
+    setBusy(false);
+  }
+}
+
+async function regenLast() {
+  const userMsgs = MESSAGES.filter(m => m.role === "user");
+  if (!userMsgs.length) { toast("Nenhuma mensagem para regenerar.", "warn"); return; }
+  const lastMsg = MESSAGES[MESSAGES.length - 1];
+  if (lastMsg?.role === "assistant") {
+    MESSAGES.pop();
+    renderChat();
+  }
+  const lastUser = MESSAGES.pop();
+  await askAI(lastUser?.content || userMsgs[userMsgs.length - 1].content);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   COMPARE
+═══════════════════════════════════════════════════════════ */
+function updateCompareHeader() {
+  const [a, b] = getCompareModels();
+  $("cmpAName").textContent = a ? `${a.provider} · ${a.name || a.id}` : "—";
+  $("cmpBName").textContent = b ? `${b.provider} · ${b.name || b.id}` : "—";
+  $("cmpFoot").textContent  = (a && b) ? `A = ${a.id}  |  B = ${b.id}` : "Selecione 2 modelos.";
+  debounceSave();
+}
+
+function swapCompare() {
+  const sel  = $("compareSelect");
+  const opts = Array.from(sel.selectedOptions);
+  if (opts.length !== 2) { toast("Selecione exatamente 2 modelos.", "warn"); return; }
+  const [av, bv] = opts.map(o => o.value);
+  const swapped = [bv, av];
+  Array.from(sel.options).forEach(o => { o.selected = swapped.includes(o.value); });
+  updateCompareHeader();
+  toast("A ↔ B trocados.");
+}
+
+async function runCompare() {
+  setErr("");
+  const text = $("prompt").value.trim();
+  if (!text) { toast("Digite a mensagem no campo Prompt antes de comparar.", "warn"); return; }
+  if (!await ensureAuth()) return;
+
+  const models = getCompareModels();
+  if (models.length !== 2) { toast("Selecione exatamente 2 modelos para comparar.", "warn"); return; }
+
+  const [a, b] = models;
+  updateCompareHeader();
+
+  const testMode = $("optTestMode").checked;
+  const sys  = $("system").value.trim();
+  const hist = MESSAGES.filter(m => m.role !== "system");
+  const msgs = [...(sys ? [{ role: "system", content: sys }] : []), ...hist, { role: "user", content: text }];
+
+  const optBase = { stream: false, temperature: +($("optTemp").value || 0.7) };
+  const mt = $("optMaxTokens").value.trim();
+  if (mt) optBase.max_tokens = +mt;
+
+  const optFor = (m) => {
+    const o = { ...optBase, model: m.id };
+    if (isOpenAI(m.id, m.provider)) {
+      const r = $("optReason").value; if (r) o.reasoning_effort = r;
+      const v = $("optVerbosity").value; if (v) o.text_verbosity = v;
+    }
+    return o;
+  };
+
+  $("cmpAOut").textContent = "Rodando…";
+  $("cmpBOut").textContent = "Rodando…";
+  $("cmpAMeta").textContent = "—";
+  $("cmpBMeta").textContent = "—";
+  $("cmpCardA").classList.remove("winner","loser");
+  $("cmpCardB").classList.remove("winner","loser");
+  ["verdictA","verdictB"].forEach(id => { const el = $(id); el.style.display = "none"; el.className = "verdict-badge"; });
+
+  setBusy(true, "Compare em paralelo…");
+  const t0 = performance.now();
+
+  async function runOne(modelObj) {
+    const t1 = performance.now();
+    const resp = await puter.ai.chat(msgs, testMode, optFor(modelObj));
+    const txt  = resp?.message?.content ?? String(resp);
+    return { text: txt, dt: (performance.now() - t1) / 1000, model: modelObj.id };
+  }
+
+  try {
+    logLine(`compare: A=${a.id} B=${b.id}`);
+    const [ra, rb] = await Promise.allSettled([runOne(a), runOne(b)]);
+    const total = (performance.now() - t0) / 1000;
+
+    let lenA = 0, lenB = 0;
+
+    if (ra.status === "fulfilled") {
+      setMd($("cmpAOut"), ra.value.text);
+      $("cmpAMeta").textContent = `${ra.value.model} · ${ra.value.dt.toFixed(1)}s · ${ra.value.text.length} chars`;
+      lenA = ra.value.text.length;
+    } else {
+      $("cmpAOut").textContent = "Erro:\n" + normErr(ra.reason);
+      $("cmpAMeta").textContent = "falhou";
+      logLine("compare A: " + normErr(ra.reason), "error");
+    }
+
+    if (rb.status === "fulfilled") {
+      setMd($("cmpBOut"), rb.value.text);
+      $("cmpBMeta").textContent = `${rb.value.model} · ${rb.value.dt.toFixed(1)}s · ${rb.value.text.length} chars`;
+      lenB = rb.value.text.length;
+    } else {
+      $("cmpBOut").textContent = "Erro:\n" + normErr(rb.reason);
+      $("cmpBMeta").textContent = "falhou";
+      logLine("compare B: " + normErr(rb.reason), "error");
+    }
+
+    if (ra.status === "fulfilled" && rb.status === "fulfilled") {
+      const winner = lenA >= lenB ? "A" : "B";
+      if (winner === "A") {
+        $("cmpCardA").classList.add("winner"); $("cmpCardB").classList.add("loser");
+        const va = $("verdictA"); va.textContent = "✦ Mais longo"; va.className = "verdict-badge win"; va.style.display = "";
+        const vb = $("verdictB"); vb.textContent = "Mais curto"; vb.className = "verdict-badge loss"; vb.style.display = "";
+      } else {
+        $("cmpCardB").classList.add("winner"); $("cmpCardA").classList.add("loser");
+        const vb = $("verdictB"); vb.textContent = "✦ Mais longo"; vb.className = "verdict-badge win"; vb.style.display = "";
+        const va = $("verdictA"); va.textContent = "Mais curto"; va.className = "verdict-badge loss"; va.style.display = "";
+      }
+    }
+
+    $("cmpFoot").textContent = `Compare concluído em ${total.toFixed(1)}s`;
+    logLine(`compare: ok total=${total.toFixed(1)}s`, "ok");
+  } catch (e) {
+    setErr("Erro no Compare.\n\n" + normErr(e));
+    logLine("compare: erro — " + normErr(e), "error");
+  } finally {
+    setBusy(false);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EXPORT / IMPORT (Puter pickers when available)
+═══════════════════════════════════════════════════════════ */
+async function exportSession() {
+  const payload = JSON.stringify({
+    exported_at: new Date().toISOString(),
+    models_loaded: MODELS.length,
+    messages: MESSAGES,
+    last_model: LAST_MODEL,
+    state: buildStateObject(),
+  }, null, 2);
+
+  // Puter native save dialog if available
+  if (window.puter?.ui?.showSaveFilePicker) {
+    try {
+      await puter.ui.showSaveFilePicker(payload, APP.EXPORT_DEFAULT());
+      toast("Exportado (Puter).", "ok");
+      logLine("export: save picker", "ok");
+      return;
+    } catch (e) {
+      logLine("export: falha save picker — " + normErr(e), "warn");
+      // fallback below
+    }
+  }
+
+  // Browser fallback download
+  try {
+    const blob = new Blob([payload], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    Object.assign(document.createElement("a"), { href: url, download: APP.EXPORT_DEFAULT() }).click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    toast("Exportado (download).", "ok");
+    logLine("export: download", "ok");
+  } catch (e) {
+    toast("Falha ao exportar.", "err");
+    logLine("export: erro — " + normErr(e), "error");
+  }
+}
+
+function fsItemPath(item) {
+  if (!item) return null;
+  if (typeof item === "string") return item;
+  return item.path || item.fullPath || item.pathname || null;
+}
+
+async function importSession() {
+  if (!await ensureAuth()) return;
+
+  if (!window.puter?.ui?.showOpenFilePicker) {
+    toast("Import nativo disponível no Puter.", "warn");
+    return;
+  }
+
+  try {
+    const picked = await puter.ui.showOpenFilePicker({ multiple: false, accept: ['.json', 'application/json'] });
+    const item = Array.isArray(picked) ? picked[0] : picked;
+    const path = fsItemPath(item);
+    if (!path) throw new Error("Arquivo selecionado sem path.");
+
+    const blob = await puter.fs.read(path);
+    const txt  = await blob.text();
+    const data = JSON.parse(txt);
+
+    // Support both: {state: {...}} or raw state
+    const st = data?.state && typeof data.state === "object" ? data.state : data;
+
+    // Apply into UI (models are handled after loadModels)
+    applySettings(st);
+
+    // If messages exist in file, prefer them
+    if (Array.isArray(data?.messages)) {
+      MESSAGES = data.messages;
+      renderChat();
+    }
+
+    toast("Importado.", "ok");
+    logLine("import: ok " + path, "ok");
+
+    // If already have models loaded, reapply selection UI
+    if (MODELS.length) {
+      if (st?.providerFilter) $("providerFilter").value = st.providerFilter;
+      if (st?.sortBy)         $("sortBy").value         = st.sortBy;
+      if (st?.modelSearch)    $("modelSearch").value    = st.modelSearch;
+      applyFilters();
+      if (st?.modelSelect) $("modelSelect").value = st.modelSelect;
+      updateDetails();
+      if (Array.isArray(st?.compareSelected)) {
+        const sel = $("compareSelect");
+        const set = new Set(st.compareSelected.slice(0, 2));
+        Array.from(sel.options).forEach(o => { o.selected = set.has(o.value); });
+        updateCompareHeader();
+      }
+    }
+
+    saveState();
+  } catch (e) {
+    setErr("Falha no Import.\n\n" + normErr(e));
+    logLine("import: erro — " + normErr(e), "error");
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONTROLS
+═══════════════════════════════════════════════════════════ */
+async function copyText(text) {
+  if (!text) { toast("Nada para copiar.", "warn"); return; }
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("Copiado!", "ok");
+  } catch {
+    const ta = Object.assign(document.createElement("textarea"), { value: text });
+    document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+    toast("Copiado!", "ok");
+  }
+}
+
+function clearChat() {
+  MESSAGES = []; LAST_TEXT = "";
+  renderChat();
+  $("footMeta").textContent = "—";
+  toast("Chat limpo.");
+  logLine("chat: limpo");
+  debounceSave();
+}
+
+function clearLogs() {
+  $("logBox").textContent = "";
+  $("logsFoot").textContent = "—";
+  toast("Logs limpos.");
+  logLine("logs: limpos");
+}
+
+function toggleTheme() {
+  const cur  = document.documentElement.getAttribute("data-theme") || "dark";
+  const next = cur === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  toast(`Tema: ${next}`);
+  logLine("theme: " + next);
+  debounceSave();
+}
+
+function toggleSidebar() {
+  $("sidebar").classList.toggle("collapsed");
+  debounceSave();
+}
+
+function setTab(name) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  $("view-" + name).classList.add("active");
+}
+
+function updateCharCounter() {
+  const len = $("prompt").value.length;
+  const el  = $("charCounter");
+  el.textContent = `${len} chars`;
+  el.classList.toggle("warn", len > 8000);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════ */
+async function init() {
+  // Load + apply saved settings early
+  applySettings(await loadSavedState());
+
+  const sdkOk = await waitForPuter(14000);
+  if (!sdkOk) {
+    setAuthUI({ state: "bad", text: "SDK falhou" });
+    setErr("SDK do Puter não carregou ([https://js.puter.com/v2/](https://js.puter.com/v2/)).\nVerifique bloqueadores e recarregue.");
+    return;
+  }
+
+  // Puter window niceties
+  try { puter.ui?.setWindowTitle?.("Puter AI Studio Pro"); } catch {}
+
+  // Native menubar (Puter)
+  installNativeMenu();
+
+  setAuthUI({ state: "bad", text: "SDK OK — verificando…" });
+  await refreshAuth();
+
+  $("btnSignIn").addEventListener("click", doSignIn);
+  $("btnReload").addEventListener("click", loadModels);
+  $("btnTheme").addEventListener("click", toggleTheme);
+  $("btnCollapse").addEventListener("click", toggleSidebar);
+
+  $("btnSend").addEventListener("click", () => askAI());
+  $("btnRegen").addEventListener("click", regenLast);
+  $("btnStop").addEventListener("click", () => { STOP_REQ = true; logLine("chat: stop"); });
+  $("btnClear").addEventListener("click", clearChat);
+  $("btnCopy").addEventListener("click", () => copyText(LAST_TEXT));
+  $("btnExport").addEventListener("click", exportSession);
+
+  $("btnRunCompare").addEventListener("click", runCompare);
+  $("btnSwapCompare").addEventListener("click", swapCompare);
+
+  $("btnCopyLogs").addEventListener("click", () => copyText($("logBox").textContent));
+  $("btnClearLogs").addEventListener("click", clearLogs);
+  $("btnPersistNow").addEventListener("click", saveState);
+
+  $("modelSearch").addEventListener("input",    () => { applyFilters(); debounceSave(); });
+  $("providerFilter").addEventListener("change", () => { applyFilters(); debounceSave(); });
+  $("sortBy").addEventListener("change",         () => { applyFilters(); debounceSave(); });
+  $("btnClearSearch").addEventListener("click",  () => { $("modelSearch").value = ""; applyFilters(); debounceSave(); });
+  $("modelSelect").addEventListener("change",    updateDetails);
+
+  $("compareSelect").addEventListener("change", () => {
+    limitCompare2();
+    updateCompareHeader();
+  });
+
+  ["system","optStream","optTestMode","optMaxTokens","optTemp","optReason","optVerbosity"].forEach(id => {
+    $(id).addEventListener("change", debounceSave);
+    $(id).addEventListener("input",  debounceSave);
+  });
+
+  $("prompt").addEventListener("input", updateCharCounter);
+
+  document.querySelectorAll(".tab").forEach(t =>
+    t.addEventListener("click", () => setTab(t.dataset.tab))
+  );
+
+  document.querySelectorAll(".toggle-row").forEach(row => {
+    row.addEventListener("click", e => {
+      if (e.target.tagName !== "INPUT") {
+        const cb = row.querySelector("input[type=checkbox]");
+        if (cb) cb.checked = !cb.checked;
+      }
+    });
+  });
+
+  $("prompt").addEventListener("keydown", e => {
+    if (e.ctrlKey && e.key === "Enter") { e.preventDefault(); askAI(); return; }
+    if ((e.key === "ArrowUp" || e.key === "ArrowDown") && PROMPT_HIST.length) {
+      e.preventDefault();
+      HIST_IDX = Math.max(-1, Math.min(PROMPT_HIST.length - 1,
+        e.key === "ArrowUp" ? HIST_IDX + 1 : HIST_IDX - 1));
+      $("prompt").value = HIST_IDX >= 0 ? PROMPT_HIST[HIST_IDX] : "";
+      updateCharCounter();
+    }
+  });
+
+  document.addEventListener("keydown", e => {
+    if (e.ctrlKey && (e.key === "k" || e.key === "K"))  { e.preventDefault(); $("modelSearch").focus(); }
+    if (e.ctrlKey && (e.key === "b" || e.key === "B"))  { e.preventDefault(); toggleSidebar(); }
+    if (e.ctrlKey && e.key === "1") { e.preventDefault(); setTab("chat"); }
+    if (e.ctrlKey && e.key === "2") { e.preventDefault(); setTab("compare"); }
+    if (e.ctrlKey && e.key === "3") { e.preventDefault(); setTab("logs"); }
+  });
+
+  window.addEventListener("error", e => {
+    const msg = e?.error?.message || e?.message || String(e);
+    setErr("Erro JS:\n" + msg);
+    logLine("window.error: " + msg, "error");
+  });
+  window.addEventListener("unhandledrejection", e => {
+    const msg = normErr(e?.reason);
+    setErr("Promise rejeitada:\n" + msg);
+    logLine("unhandledrejection: " + msg, "error");
+  });
+
+  await loadModels();
+  updateCompareHeader();
+  updateCharCounter();
+
+  toast("Pronto.", "ok");
+  logLine("init: pronto", "ok");
+}
+
+init();
+</script>
+</body>
+</html>
